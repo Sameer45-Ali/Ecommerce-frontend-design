@@ -813,3 +813,45 @@ header nav a:hover {
 .hidden {
     display: none;
 }
+/* For tablets and small laptops */
+@media (max-width: 1024px) {
+  .container {
+    width: 95%;
+  }
+  nav ul {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
+
+/* For mobile devices */
+@media (max-width: 768px) {
+  .container {
+    width: 100%;
+    padding: 0 15px;
+  }
+  nav ul {
+    flex-direction: column;
+    align-items: center;
+  }
+  .product-card {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  .hero-text {
+    font-size: 1.2rem;
+    text-align: center;
+  }
+}
+
+/* For very small screens */
+@media (max-width: 480px) {
+  h1, h2, h3 {
+    font-size: 1.1rem;
+  }
+  .btn {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+}
+
