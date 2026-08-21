@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Account Login & Sign Up — NexusStore</title>
+  <title>Shopping Cart & Checkout — NexusStore</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
@@ -76,12 +76,12 @@
       <!-- Secondary Sub-Navigation Bar -->
       <nav class="nav-subbar">
         <div class="nav-links">
-          <a href="index.html" class="active"><i class="fa-solid fa-house"></i> Home</a>
+          <a href="index.html" class=""><i class="fa-solid fa-house"></i> Home</a>
           <a href="category.html" class=""><i class="fa-solid fa-border-all"></i> All Products</a>
           <a href="category.html?category=electronics"><i class="fa-solid fa-laptop"></i> Electronics</a>
           <a href="category.html?category=home"><i class="fa-solid fa-couch"></i> Home & Living</a>
           <a href="category.html?category=clothing"><i class="fa-solid fa-shirt"></i> Fashion</a>
-          <a href="cart.html" class=""><i class="fa-solid fa-credit-card"></i> Checkout</a>
+          <a href="cart.html" class="active"><i class="fa-solid fa-credit-card"></i> Checkout</a>
           <a href="index.html#deals" style="color: var(--danger); font-weight: 700;"><i class="fa-solid fa-bolt"></i> Flash Deals</a>
         </div>
         <div class="nav-settings">
@@ -105,84 +105,66 @@
   </header>
 
 
-  <main class="auth-wrapper">
-    <div class="auth-card">
-      <div style="text-align: center; margin-bottom: 24px;">
-        <a href="index.html" class="brand-logo" style="justify-content: center; margin-bottom: 8px;">
-          <div class="logo-icon"><i class="fa-solid fa-cube"></i></div>
-          <span>NEXUS<span class="accent">STORE</span></span>
-        </a>
-        <p style="color: var(--text-muted); font-size: 0.875rem;">Access your orders, saved items, and personalized AI shopper.</p>
+  <main class="container">
+    <div style="margin: 24px 0 10px;">
+      <h1>Shopping Bag & Checkout</h1>
+      <p style="color: var(--text-muted); font-size: 0.9rem;">Review your items, apply discount codes, and complete your order.</p>
+    </div>
+
+    <div class="cart-page-layout">
+      <!-- Left: Cart Items List -->
+      <div class="cart-table-card">
+        <h4 style="margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between;">
+          <span>Items in Bag</span>
+          <button onclick="localStorage.removeItem('ecom_cart_v2'); renderCartPage(); showToast('Cart cleared', 'default');" style="font-size: 0.8rem; color: var(--danger); font-weight: 600;">Clear Cart</button>
+        </h4>
+
+        <div id="cartPageList" style="display: flex; flex-direction: column; gap: 16px;">
+          <!-- Dynamically Rendered -->
+        </div>
       </div>
 
-      <!-- Tabs Toggle -->
-      <div class="auth-tabs">
-        <button id="tabSignIn" class="auth-tab-btn active">Sign In</button>
-        <button id="tabSignUp" class="auth-tab-btn">Create Account</button>
-      </div>
+      <!-- Right: Order Summary & Checkout -->
+      <aside class="order-summary-card">
+        <h4>Order Summary</h4>
+        
+        <div style="display: flex; justify-content: space-between; font-size: 0.9rem; color: var(--text-muted);">
+          <span>Subtotal</span>
+          <span id="pageSubtotal">$0.00</span>
+        </div>
 
-      <!-- Sign In Form -->
-      <form id="signInForm">
-        <div class="form-group">
-          <label>Email Address</label>
-          <div class="form-control-icon">
-            <i class="fa-regular fa-envelope"></i>
-            <input type="email" id="loginEmail" placeholder="you@example.com" required>
+        <div style="display: flex; justify-content: space-between; font-size: 0.9rem; color: var(--text-muted);">
+          <span>Shipping Estimate</span>
+          <span style="color: var(--success); font-weight: 700;">FREE</span>
+        </div>
+
+        <div id="discountRow" style="display: none; justify-content: space-between; font-size: 0.9rem; color: var(--danger); font-weight: 700;">
+          <span>Discount Voucher</span>
+          <span id="discountAmount">-$0.00</span>
+        </div>
+
+        <div style="border-top: 1px solid var(--border-color); padding-top: 14px; display: flex; justify-content: space-between; font-size: 1.25rem; font-weight: 800;">
+          <span>Total</span>
+          <span id="pageTotal" style="color: var(--primary);">$0.00</span>
+        </div>
+
+        <!-- Coupon Code Box -->
+        <div style="margin: 10px 0;">
+          <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; display: block;">Have a Promo Code?</label>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="couponInput" placeholder="Try 'SAVE20' or 'DISCOUNT10'" style="flex: 1; background: var(--bg-alt); border: 1px solid var(--border-color); padding: 8px 12px; border-radius: var(--radius-sm); font-size: 0.85rem; color: var(--text-main);">
+            <button id="applyCouponBtn" class="btn btn-secondary btn-sm">Apply</button>
           </div>
         </div>
 
-        <div class="form-group">
-          <label>Password</label>
-          <div class="form-control-icon">
-            <i class="fa-solid fa-lock"></i>
-            <input type="password" id="loginPassword" placeholder="••••••••" required>
-            <button type="button" class="password-toggle-btn" style="position: absolute; right: 14px; color: var(--text-light);"><i class="fa-solid fa-eye"></i></button>
-          </div>
-        </div>
-
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-size: 0.85rem;">
-          <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; color: var(--text-muted);">
-            <input type="checkbox" checked style="accent-color: var(--primary);"> Remember me
-          </label>
-          <a href="#" style="color: var(--primary); font-weight: 600;">Forgot Password?</a>
-        </div>
-
-        <button class="btn btn-primary btn-block btn-lg" type="submit">Sign In to Account</button>
-
-        <button type="button" id="demoLoginBtn" class="btn btn-outline btn-block btn-sm" style="margin-top: 10px;">
-          <i class="fa-solid fa-user-check"></i> Autofill Demo Credentials
+        <button id="placeOrderBtn" class="btn btn-primary btn-block btn-lg" style="margin-top: 8px;">
+          <i class="fa-solid fa-lock"></i> Place Order Now
         </button>
-      </form>
 
-      <!-- Sign Up Form (Hidden initially) -->
-      <form id="signUpForm" style="display: none;">
-        <div class="form-group">
-          <label>Full Name</label>
-          <div class="form-control-icon">
-            <i class="fa-regular fa-user"></i>
-            <input type="text" id="regName" placeholder="Alex Morgan" required>
-          </div>
+        <div style="text-align: center; color: var(--text-light); font-size: 0.75rem; margin-top: 10px;">
+          <i class="fa-solid fa-shield-check"></i> Encrypted 256-Bit SSL Checkout
         </div>
-
-        <div class="form-group">
-          <label>Email Address</label>
-          <div class="form-control-icon">
-            <i class="fa-regular fa-envelope"></i>
-            <input type="email" id="regEmail" placeholder="you@example.com" required>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Password</label>
-          <div class="form-control-icon">
-            <i class="fa-solid fa-lock"></i>
-            <input type="password" id="regPassword" placeholder="Create strong password" required>
-            <button type="button" class="password-toggle-btn" style="position: absolute; right: 14px; color: var(--text-light);"><i class="fa-solid fa-eye"></i></button>
-          </div>
-        </div>
-
-        <button class="btn btn-primary btn-block btn-lg" type="submit">Create Free Account</button>
-      </form>
+      </aside>
     </div>
   </main>
 
@@ -351,6 +333,101 @@
 
 
   <script src="script.js"></script>
-  <script src="login.js"></script>
+  <script>
+    let discountPercent = 0;
+
+    function renderCartPage() {
+      const container = document.getElementById("cartPageList");
+      const subtotalEl = document.getElementById("pageSubtotal");
+      const totalEl = document.getElementById("pageTotal");
+      const discountRow = document.getElementById("discountRow");
+      const discountAmountEl = document.getElementById("discountAmount");
+      if (!container) return;
+
+      const cart = getCart();
+      if (cart.length === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 50px 20px; color: var(--text-muted);">
+            <i class="fa-solid fa-bag-shopping" style="font-size: 3.5rem; color: var(--text-light); margin-bottom: 14px; display: block;"></i>
+            <h3>Your cart is empty</h3>
+            <p style="margin-top: 6px;">Browse our catalog and add your favorite items.</p>
+            <a href="category.html" class="btn btn-primary btn-sm" style="margin-top: 18px;">Start Shopping</a>
+          </div>
+        `;
+        subtotalEl.textContent = "$0.00";
+        totalEl.textContent = "$0.00";
+        return;
+      }
+
+            container.innerHTML = cart.map(item => `
+        <div style="display: flex; gap: 16px; align-items: center; padding-bottom: 16px; border-bottom: 1px solid var(--border-light);">
+          <img src="${item.image}" alt="${item.title}" style="width: 80px; height: 80px; object-fit: contain; background: var(--bg-alt); border-radius: var(--radius-sm); padding: 6px;">
+          <div style="flex: 1;">
+            <h5 style="font-size: 1rem; font-weight: 700; color: var(--text-main);"><a href="product.html?id=${item.id}">${item.title}</a></h5>
+            <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">${item.category}</span>
+            <div style="color: var(--primary); font-weight: 800; margin-top: 4px;">${formatPrice(item.price)} each</div>
+          </div>
+          <div class="qty-stepper">
+            <button onclick="updateItemQty('${item.id}', -1); renderCartPage();">-</button>
+            <input type="text" value="${item.qty}" readonly>
+            <button onclick="updateItemQty('${item.id}', 1); renderCartPage();">+</button>
+          </div>
+          <div style="font-size: 1.1rem; font-weight: 800; min-width: 80px; text-align: right;">
+            ${formatPrice(item.price * item.qty)}
+          </div>
+          <button onclick="removeFromCart('${item.id}'); renderCartPage();" style="color: var(--danger); font-size: 1rem; padding: 6px;">
+            <i class="fa-regular fa-trash-can"></i>
+          </button>
+        </div>
+      `).join("");
+
+      const subtotal = getCartTotal();
+      const discount = subtotal * discountPercent;
+      const total = Math.max(0, subtotal - discount);
+
+      subtotalEl.textContent = formatPrice(subtotal);
+      totalEl.textContent = formatPrice(total);
+
+      if (discountPercent > 0) {
+        discountRow.style.display = "flex";
+        discountAmountEl.textContent = `-${formatPrice(discount)}`;
+      } else {
+        discountRow.style.display = "none";
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderCartPage();
+
+      document.getElementById("applyCouponBtn")?.addEventListener("click", () => {
+        const val = document.getElementById("couponInput").value.trim().toUpperCase();
+        if (val === "SAVE20") {
+          discountPercent = 0.20;
+          showToast("Coupon 'SAVE20' Applied! 20% OFF", "success");
+          renderCartPage();
+        } else if (val === "DISCOUNT10") {
+          discountPercent = 0.10;
+          showToast("Coupon 'DISCOUNT10' Applied! 10% OFF", "success");
+          renderCartPage();
+        } else {
+          showToast("Invalid Coupon Code. Try 'SAVE20'", "error");
+        }
+      });
+
+      document.getElementById("placeOrderBtn")?.addEventListener("click", () => {
+        const cart = getCart();
+        if (cart.length === 0) {
+          showToast("Your cart is empty! Please add items before checkout.", "warning");
+          return;
+        }
+        showToast("🎉 Order Confirmed! Thank you for your purchase.", "success");
+        localStorage.removeItem("ecom_cart_v2");
+        setTimeout(() => {
+          renderCartPage();
+          updateCartBadge();
+        }, 1000);
+      });
+    });
+</script>
 </body>
 </html>

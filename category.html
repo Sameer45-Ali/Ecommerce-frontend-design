@@ -1,88 +1,374 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width,initial-scale=1.0" /><title>Category</title><link rel="stylesheet" href="styles.css" /></head>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Catalog & Filters — NexusStore</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
 <body>
-<header class="site-header">
-  <div class="top-bar">
-    <div class="left">
-      <div class="logo">🔒 Brand</div>
-      <div class="search-wrapper">
-        <input class="search-input" placeholder="Search within category..." />
-        <select class="category-select"><option>All category</option></select>
-        <button class="btn primary">Search</button>
-      </div>
-    </div>
-    <div class="right">
-      <div class="icon">Profile</div><div class="icon">Orders</div><div class="icon cart">Cart (<span id="cart-count">0</span>)</div>
-    </div>
+  
+  <!-- Top Announcement Bar -->
+  <div class="top-announcement">
+    <span>✨ Mega Sale: <strong>Up to 50% OFF</strong> on Top Electronics & Home Essentials!</span>
+    <span style="opacity: 0.7;">|</span>
+    <span><i class="fa-solid fa-truck-fast"></i> Free Worldwide Delivery Over $50</span>
   </div>
-  <div class="nav-bar">
-    <div class="nav-left"><div class="nav-item dropdown">All category</div><div class="nav-item">Hot offers</div></div>
-    <div class="nav-right"><div class="nav-item"> <select class="country"> <option> united state </option> <option>USD </option> <option> paktistan </option></div> </div></select> <div class="nav-item">Ship</div></div>
-  </div>
-</header>
-<main class="container">
-  <div class="breadcrumb-row">
-    <div class="breadcrumbs"><a href="index.html">Home</a> &gt; Electronics &gt; Smartphones</div>
-    <div class="listing-controls">
-      <div class="items-count">12,911 items in <strong>Mobile accessory</strong></div>
-      <label class="verified-checkbox"><input type="checkbox" checked /> Verified only</label>
-      <div class="sort-wrapper">
-        <select class="sort-select">
-          <option>Featured</option><option>Price: Low to High</option><option>Price: High to Low</option>
-        </select>
-      </div>
-      <div class="view-toggle">
-        <div class="toggle-btn active">☰</div><div class="toggle-btn">▦</div>
-      </div>
-    </div>
-  </div>
-  <div class="category-page">
-    <aside class="sidebar">
-      <div class="filter-section">
-        <div class="category-title">Brands</div>
-        <div class="checkbox-list">
-          <label><input type="checkbox" /> Samsung</label>
-          <label><input type="checkbox" /> Apple</label>
-        </div>
-      </div>
-      <div class="filter-section">
-        <div class="category-title">Price range</div>
-        <div class="price-range">
-          <div class="range-inputs">
-            <div class="range-box"><label class="small-label">Min</label><input type="number" placeholder="0" /></div>
-            <div class="range-box"><label class="small-label">Max</label><input type="number" placeholder="1000" /></div>
-          </div>
-          <input type="range" class="slider" min="0" max="1000" />
-          <button class="btn secondary apply-btn">Apply</button>
-        </div>
-      </div>
-    </aside>
-    <section class="listing-section">
-      <div class="product-list"></div>
-      <div class="pagination">
-        <div class="show-count">Show <select><option>10</option><option>20</option></select></div>
-        <div class="pages"><button class="page-btn">1</button><button class="page-btn">2</button></div>
-      </div>
-    </section>
-  </div>
-</main>
-<footer class="site-footer">
-  <div class="footer-top">
-    <div class="brand"><div class="logo">🔒 Brand</div><p>Best info here</p></div>
-    <div class="col"><h4>About</h4><p>About Us</p></div>
-    <div class="col"><h4>Partnership</h4><p>Partners</p></div>
-    <div class="col"><h4>Information</h4><p>Help Center</p></div>
-    <div class="col"><h4>For users</h4><p>Login</p></div>
-    <div class="col"><h4>Get app</h4><p>App Store</p></div>
-  </div>
-  <div class="footer-bottom">
-    <div class="newsletter"><span>Subscribe</span><div class="subscribe-form"><input placeholder="Email"/><button class="btn">Subscribe</button></div></div>
-    <div class="copyright">©2023 Ecommerce</div>
-  </div>
-</footer>
-<div id="toast-container" class="toast-container" aria-live="polite"></div>
 
-<script src="script.js"></script>
+  <!-- Main Sticky Header -->
+  <header class="site-header">
+    <div class="container">
+      <div class="header-main">
+        <!-- Logo -->
+        <a href="index.html" class="brand-logo">
+          <div class="logo-icon"><i class="fa-solid fa-cube"></i></div>
+          <span>NEXUS<span class="accent">STORE</span></span>
+        </a>
+
+        <!-- Search Bar with Live Auto-Suggest -->
+        <div class="header-search">
+          <div class="search-box">
+            <select id="categorySelect" class="search-category">
+              <option value="">All Categories</option>
+              <option value="electronics">Electronics</option>
+              <option value="home">Home & Living</option>
+              <option value="clothing">Fashion & Apparel</option>
+            </select>
+            <input type="text" id="searchInput" placeholder="Search 10,000+ products, tech, furniture..." autocomplete="off">
+            <button id="searchBtn" class="btn-icon" style="background: var(--primary); color: #fff; border: none; width: 34px; height: 34px;" title="Search">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+          </div>
+          <!-- Live Auto-Suggestions Dropdown -->
+          <div id="searchSuggestions" class="search-suggestions"></div>
+        </div>
+
+        <!-- Header Actions -->
+        <div class="header-actions">
+          <!-- Theme Toggle -->
+          <button class="theme-toggle-btn" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+
+          <!-- User Profile / Auth -->
+          <a href="login.html" class="action-btn">
+            <i class="fa-regular fa-user"></i>
+            <span>Account</span>
+          </a>
+
+          <!-- Wishlist -->
+          <a href="category.html" class="action-btn">
+            <i class="fa-regular fa-heart"></i>
+            <span id="wishlist-count" class="badge-count wishlist-badge-count">0</span>
+            <span>Wishlist</span>
+          </a>
+
+          <!-- Cart Drawer Trigger -->
+          <button class="action-btn cart-drawer-trigger" id="openCartBtn" title="Shopping Cart">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span id="cart-count" class="badge-count cart-badge-count">0</span>
+            <span>My Cart</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Secondary Sub-Navigation Bar -->
+      <nav class="nav-subbar">
+        <div class="nav-links">
+          <a href="index.html" class=""><i class="fa-solid fa-house"></i> Home</a>
+          <a href="category.html" class="active"><i class="fa-solid fa-border-all"></i> All Products</a>
+          <a href="category.html?category=electronics"><i class="fa-solid fa-laptop"></i> Electronics</a>
+          <a href="category.html?category=home"><i class="fa-solid fa-couch"></i> Home & Living</a>
+          <a href="category.html?category=clothing"><i class="fa-solid fa-shirt"></i> Fashion</a>
+          <a href="cart.html" class=""><i class="fa-solid fa-credit-card"></i> Checkout</a>
+          <a href="index.html#deals" style="color: var(--danger); font-weight: 700;"><i class="fa-solid fa-bolt"></i> Flash Deals</a>
+        </div>
+        <div class="nav-settings">
+          <select id="currencySelect" class="currency-select">
+            <option value="USD">USD ($)</option>
+            <option value="PKR">PKR (Rs)</option>
+            <option value="EUR">EUR (€)</option>
+            <option value="GBP">GBP (£)</option>
+          </select>
+          <span style="color: var(--text-light);">|</span>
+          <span style="display: flex; align-items: center; gap: 4px;"><i class="fa-solid fa-location-dot" style="color: var(--primary);"></i> Ship to:</span>
+          <select id="countrySelect" class="country-select" style="font-weight: 700;">
+            <option value="USA">USA 🇺🇸</option>
+            <option value="Pakistan">Pakistan 🇵🇰</option>
+            <option value="Germany (EU)">Europe 🇪🇺</option>
+            <option value="United Kingdom">UK 🇬🇧</option>
+          </select>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+
+  <main class="container">
+    <div style="margin: 20px 0 10px; font-size: 0.875rem; color: var(--text-muted);" id="catalogBreadcrumb">
+      <a href="index.html">Home</a> &gt; <a href="category.html">Shop</a> &gt; <span>All Products</span>
+    </div>
+
+    <div class="catalog-layout">
+      <!-- Left Filters Sidebar -->
+      <aside class="filters-sidebar">
+        <!-- Categories Filter -->
+        <div class="filter-card">
+          <h5>Categories <i class="fa-solid fa-chevron-down" style="font-size: 0.75rem;"></i></h5>
+          <div class="checkbox-list">
+            <a href="#" class="category-filter-item active" data-category="" style="display: block; padding: 6px 0; font-weight: 600; color: var(--primary);">All Categories</a>
+            <a href="#" class="category-filter-item" data-category="electronics" style="display: block; padding: 6px 0;">Consumer Electronics</a>
+            <a href="#" class="category-filter-item" data-category="home" style="display: block; padding: 6px 0;">Home & Interior</a>
+            <a href="#" class="category-filter-item" data-category="clothing" style="display: block; padding: 6px 0;">Fashion & Apparel</a>
+          </div>
+        </div>
+
+        <!-- Brands Filter -->
+        <div class="filter-card">
+          <h5>Brands <i class="fa-solid fa-chevron-down" style="font-size: 0.75rem;"></i></h5>
+          <div class="checkbox-list">
+            <label><input type="checkbox" class="brand-checkbox" value="Apple"> Apple</label>
+            <label><input type="checkbox" class="brand-checkbox" value="Samsung"> Samsung</label>
+            <label><input type="checkbox" class="brand-checkbox" value="Sony"> Sony</label>
+            <label><input type="checkbox" class="brand-checkbox" value="Dell"> Dell</label>
+            <label><input type="checkbox" class="brand-checkbox" value="Nordic"> Nordic Design</label>
+            <label><input type="checkbox" class="brand-checkbox" value="DeLonghi"> DeLonghi</label>
+          </div>
+        </div>
+
+        <!-- Price Range Slider Filter -->
+        <div class="filter-card">
+          <h5>Price Range <i class="fa-solid fa-chevron-down" style="font-size: 0.75rem;"></i></h5>
+          <div class="price-slider-group">
+            <div class="price-inputs-row">
+              <div class="price-input-box">
+                <span style="color: var(--text-light); margin-right: 4px;">$</span>
+                <input type="number" id="minPriceInput" value="0" min="0">
+              </div>
+              <span style="color: var(--text-light);">-</span>
+              <div class="price-input-box">
+                <span style="color: var(--text-light); margin-right: 4px;">$</span>
+                <input type="number" id="maxPriceInput" value="1000" max="1000">
+              </div>
+            </div>
+            <input type="range" id="priceSlider" class="range-slider" min="0" max="1000" step="10" value="1000">
+          </div>
+        </div>
+
+        <!-- Verified & Stock Status -->
+        <div class="filter-card">
+          <h5>Status & Guarantee</h5>
+          <div class="checkbox-list">
+            <label><input type="checkbox" id="verifiedCheckbox"> Verified Sellers Only</label>
+            <label><input type="checkbox" checked> In Stock Only</label>
+          </div>
+          <button id="clearFiltersBtn" class="btn btn-outline btn-sm btn-block" style="margin-top: 14px;">
+            <i class="fa-solid fa-arrows-rotate"></i> Reset All Filters
+          </button>
+        </div>
+      </aside>
+
+      <!-- Right Products Content -->
+      <section>
+        <!-- Catalog Toolbar -->
+        <div class="catalog-toolbar">
+          <div id="itemCountDisplay" style="font-size: 0.9rem; color: var(--text-muted);">
+            Showing <strong>15</strong> products
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <div style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem;">
+              <span style="color: var(--text-muted);">Sort By:</span>
+              <select id="sortSelect" style="background: var(--bg-alt); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: var(--radius-sm); font-weight: 600; color: var(--text-main);">
+                <option value="featured">Featured & Best</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="rating">Customer Rating</option>
+                <option value="newest">Newest Arrivals</option>
+              </select>
+            </div>
+
+            <div class="view-switchers">
+              <button id="gridViewBtn" class="view-btn active" title="Grid View"><i class="fa-solid fa-grip"></i></button>
+              <button id="listViewBtn" class="view-btn" title="List View"><i class="fa-solid fa-list"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Product Grid -->
+        <div id="catalogProductGrid" class="products-grid">
+          <!-- Populated by category.js from PRODUCTS data -->
+        </div>
+      </section>
+    </div>
+  </main>
+
+  
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="brand-logo" style="margin-bottom: 8px;">
+            <div class="logo-icon"><i class="fa-solid fa-cube"></i></div>
+            <span>NEXUS<span class="accent">STORE</span></span>
+          </a>
+          <p>The next-generation smart e-commerce platform curated with premium tech, home luxury, and AI-powered recommendations.</p>
+          <div class="social-links">
+            <a href="#" class="social-link" title="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="#" class="social-link" title="GitHub"><i class="fa-brands fa-github"></i></a>
+            <a href="#" class="social-link" title="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+            <a href="#" class="social-link" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h5>Shop Categories</h5>
+          <ul>
+            <li><a href="category.html?category=electronics">Consumer Tech</a></li>
+            <li><a href="category.html?category=home">Home Interior</a></li>
+            <li><a href="category.html?category=clothing">Apparel & Fashion</a></li>
+            <li><a href="category.html">New Arrivals</a></li>
+            <li><a href="index.html#deals">Flash Deals</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Customer Care</h5>
+          <ul>
+            <li><a href="#">Help Center & FAQ</a></li>
+            <li><a href="#">Track Your Order</a></li>
+            <li><a href="#">Shipping & Delivery</a></li>
+            <li><a href="#">Returns & Refund</a></li>
+            <li><a href="#">Contact Support</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Account</h5>
+          <ul>
+            <li><a href="login.html">Sign In / Register</a></li>
+            <li><a href="cart.html">View Cart</a></li>
+            <li><a href="category.html">My Wishlist</a></li>
+            <li><a href="#">Order History</a></li>
+            <li><a href="#">Affiliate Program</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col newsletter-form-box">
+          <h5>Join Our VIP Newsletter</h5>
+          <p>Get instant $15 discount coupons and exclusive access to flash drops.</p>
+          <form class="newsletter-form">
+            <input type="email" placeholder="Enter your email..." required>
+            <button class="btn btn-primary btn-sm" type="submit">Join</button>
+          </form>
+          <div style="display: flex; gap: 14px; margin-top: 20px; font-size: 1.5rem; color: var(--text-light);">
+            <i class="fa-brands fa-cc-visa" title="Visa"></i>
+            <i class="fa-brands fa-cc-mastercard" title="Mastercard"></i>
+            <i class="fa-brands fa-cc-apple-pay" title="Apple Pay"></i>
+            <i class="fa-brands fa-cc-paypal" title="PayPal"></i>
+            <i class="fa-brands fa-stripe" title="Stripe"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom-bar">
+        <span>&copy; 2026 NexusStore Inc. All rights reserved. Designed with modern aesthetics.</span>
+        <div style="display: flex; gap: 16px;">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Security</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Slide-Over Shopping Cart Drawer -->
+  <div id="cartDrawerBackdrop" class="cart-drawer-backdrop" onclick="closeCartDrawer()"></div>
+  <div id="cartDrawer" class="cart-drawer">
+    <div class="cart-drawer-header">
+      <h4><i class="fa-solid fa-bag-shopping" style="color: var(--primary);"></i> Your Cart</h4>
+      <button onclick="closeCartDrawer()" class="btn-icon" style="width: 32px; height: 32px; font-size: 1.1rem;">&times;</button>
+    </div>
+    <div id="cartDrawerBody" class="cart-drawer-body">
+      <!-- Items dynamically populated via script.js -->
+    </div>
+    <div class="cart-drawer-footer">
+      <div class="cart-subtotal-row">
+        <span>Subtotal:</span>
+        <span id="cartDrawerSubtotal" style="color: var(--primary);">$0.00</span>
+      </div>
+      <a href="cart.html" class="btn btn-primary btn-block" style="margin-bottom: 8px;">
+        <i class="fa-solid fa-lock"></i> Secure Checkout
+      </a>
+      <button class="btn btn-secondary btn-block btn-sm" onclick="closeCartDrawer()">Continue Shopping</button>
+    </div>
+  </div>
+
+  <!-- Quick View Modal -->
+  <div id="quickViewModal" class="modal-backdrop" onclick="if(event.target === this) closeQuickView()">
+    <div class="modal-dialog">
+      <button class="modal-close-btn" onclick="closeQuickView()">&times;</button>
+      <div id="quickViewContent">
+        <!-- Dynamically rendered -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating AI Assistant Widget -->
+  <div class="ai-assistant-wrapper">
+    <!-- Chat Window -->
+    <div id="aiChatWindow" class="ai-chat-window">
+      <div class="ai-chat-header">
+        <div class="ai-header-info">
+          <div class="ai-avatar"><i class="fa-solid fa-robot"></i></div>
+          <div>
+            <h4>Nexus AI Assistant</h4>
+            <p><i class="fa-solid fa-circle" style="font-size: 0.55rem; color: #4ade80;"></i> Online & Ready</p>
+          </div>
+        </div>
+        <button onclick="toggleAIChat()" style="color: #fff; font-size: 1.2rem; cursor: pointer;">&times;</button>
+      </div>
+
+      <!-- Messages Container -->
+      <div id="aiChatMessages" class="ai-chat-messages">
+        <div class="ai-msg bot">
+          <div class="ai-msg-bubble">
+            👋 Hi! I'm your AI Shopping Concierge. Looking for a product, gift recommendation, or current discount? Ask me anything!
+          </div>
+        </div>
+      </div>
+
+      <!-- Suggested Prompts -->
+      <div class="ai-suggested-prompts">
+        <span class="ai-prompt-chip" onclick="sendAIMessage('Recommend a laptop under $500')">💻 Laptop under $500</span>
+        <span class="ai-prompt-chip" onclick="sendAIMessage('Show me smart watches')">⌚ Smart Watch</span>
+        <span class="ai-prompt-chip" onclick="sendAIMessage('What is your return policy?')">🔄 Return Policy</span>
+        <span class="ai-prompt-chip" onclick="sendAIMessage('Best deals today')">🔥 Hot Deals</span>
+      </div>
+
+      <!-- Input Box -->
+      <div class="ai-chat-input-row">
+        <input type="text" id="aiChatInput" placeholder="Ask AI about products, specs, deals..." autocomplete="off">
+        <button onclick="sendAIMessage()" class="btn-icon" style="background: var(--primary); color: #fff; border: none; width: 34px; height: 34px;">
+          <i class="fa-solid fa-paper-plane"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Floating Launcher Button -->
+    <div class="ai-launcher-btn" onclick="toggleAIChat()" title="Chat with AI Assistant">
+      <span class="ai-badge-label">AI</span>
+      <i class="fa-solid fa-wand-magic-sparkles"></i>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+
+  <script src="script.js"></script>
+  <script src="category.js"></script>
 </body>
 </html>

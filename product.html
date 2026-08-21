@@ -1,73 +1,427 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Page</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Details — NexusStore</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
-<body class="product-page">
+<body>
+  
+  <!-- Top Announcement Bar -->
+  <div class="top-announcement">
+    <span>✨ Mega Sale: <strong>Up to 50% OFF</strong> on Top Electronics & Home Essentials!</span>
+    <span style="opacity: 0.7;">|</span>
+    <span><i class="fa-solid fa-truck-fast"></i> Free Worldwide Delivery Over $50</span>
+  </div>
 
-    <!-- Header -->
-    <header>
-        <div class="logo">My Store</div>
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="#">Shop</a>
-            <a href="cart.html">Cart (<span id="cart-count">0</span>)</a>
-        </nav>
-    </header>
+  <!-- Main Sticky Header -->
+  <header class="site-header">
+    <div class="container">
+      <div class="header-main">
+        <!-- Logo -->
+        <a href="index.html" class="brand-logo">
+          <div class="logo-icon"><i class="fa-solid fa-cube"></i></div>
+          <span>NEXUS<span class="accent">STORE</span></span>
+        </a>
 
-    <!-- Main Product Section -->
-    <main class="product-container">
-        <!-- Left: Images -->
-        <div class="product-images">
-            <img id="current-img" src="images/product1-main.jpg" alt="Product" class="main-image">
-            <div class="thumbnails">
-                <img src="images/product1-thumb1.jpg" data-src="images/product1-main.jpg" class="thumb selected" alt="Thumb 1">
-                <img src="images/product1-thumb2.jpg" data-src="images/product1-2.jpg" class="thumb" alt="Thumb 2">
-                <img src="images/product1-thumb3.jpg" data-src="images/product1-3.jpg" class="thumb" alt="Thumb 3">
-            </div>
+        <!-- Search Bar with Live Auto-Suggest -->
+        <div class="header-search">
+          <div class="search-box">
+            <select id="categorySelect" class="search-category">
+              <option value="">All Categories</option>
+              <option value="electronics">Electronics</option>
+              <option value="home">Home & Living</option>
+              <option value="clothing">Fashion & Apparel</option>
+            </select>
+            <input type="text" id="searchInput" placeholder="Search 10,000+ products, tech, furniture..." autocomplete="off">
+            <button id="searchBtn" class="btn-icon" style="background: var(--primary); color: #fff; border: none; width: 34px; height: 34px;" title="Search">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+          </div>
+          <!-- Live Auto-Suggestions Dropdown -->
+          <div id="searchSuggestions" class="search-suggestions"></div>
         </div>
 
-        <!-- Right: Details -->
-        <div class="product-details">
-            <h1 class="product-title">Awesome Product</h1>
-            <p class="price">
-                <span class="price-current">$49.99</span>
-                <span class="price-old">$69.99</span>
-            </p>
+        <!-- Header Actions -->
+        <div class="header-actions">
+          <!-- Theme Toggle -->
+          <button class="theme-toggle-btn" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+            <i class="fa-solid fa-moon"></i>
+          </button>
 
-            <div class="quantity-control">
-                <button id="decrease-qty">-</button>
-                <input type="number" id="qty" value="1" min="1">
-                <button id="increase-qty">+</button>
-            </div>
+          <!-- User Profile / Auth -->
+          <a href="login.html" class="action-btn">
+            <i class="fa-regular fa-user"></i>
+            <span>Account</span>
+          </a>
 
-            <button id="add-to-cart" class="btn">Add to Cart</button>
+          <!-- Wishlist -->
+          <a href="category.html" class="action-btn">
+            <i class="fa-regular fa-heart"></i>
+            <span id="wishlist-count" class="badge-count wishlist-badge-count">0</span>
+            <span>Wishlist</span>
+          </a>
+
+          <!-- Cart Drawer Trigger -->
+          <button class="action-btn cart-drawer-trigger" id="openCartBtn" title="Shopping Cart">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span id="cart-count" class="badge-count cart-badge-count">0</span>
+            <span>My Cart</span>
+          </button>
         </div>
-    </main>
+      </div>
 
-    <!-- Tabs Section -->
-    <section class="product-info-tabs">
-        <div class="tabs">
-            <button class="tab-btn active" data-target="description">Description</button>
-            <button class="tab-btn" data-target="reviews">Reviews</button>
+      <!-- Secondary Sub-Navigation Bar -->
+      <nav class="nav-subbar">
+        <div class="nav-links">
+          <a href="index.html" class=""><i class="fa-solid fa-house"></i> Home</a>
+          <a href="category.html" class="active"><i class="fa-solid fa-border-all"></i> All Products</a>
+          <a href="category.html?category=electronics"><i class="fa-solid fa-laptop"></i> Electronics</a>
+          <a href="category.html?category=home"><i class="fa-solid fa-couch"></i> Home & Living</a>
+          <a href="category.html?category=clothing"><i class="fa-solid fa-shirt"></i> Fashion</a>
+          <a href="cart.html" class=""><i class="fa-solid fa-credit-card"></i> Checkout</a>
+          <a href="index.html#deals" style="color: var(--danger); font-weight: 700;"><i class="fa-solid fa-bolt"></i> Flash Deals</a>
+        </div>
+        <div class="nav-settings">
+          <select id="currencySelect" class="currency-select">
+            <option value="USD">USD ($)</option>
+            <option value="PKR">PKR (Rs)</option>
+            <option value="EUR">EUR (€)</option>
+            <option value="GBP">GBP (£)</option>
+          </select>
+          <span style="color: var(--text-light);">|</span>
+          <span style="display: flex; align-items: center; gap: 4px;"><i class="fa-solid fa-location-dot" style="color: var(--primary);"></i> Ship to:</span>
+          <select id="countrySelect" class="country-select" style="font-weight: 700;">
+            <option value="USA">USA 🇺🇸</option>
+            <option value="Pakistan">Pakistan 🇵🇰</option>
+            <option value="Germany (EU)">Europe 🇪🇺</option>
+            <option value="United Kingdom">UK 🇬🇧</option>
+          </select>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+
+  <main class="container">
+    <div style="margin: 20px 0 10px; font-size: 0.875rem; color: var(--text-muted);">
+      <a href="index.html">Home</a> &gt; <a href="category.html">Shop</a> &gt; <a id="pBreadcrumbCategory" href="category.html">Electronics</a> &gt; <span id="pBreadcrumbTitle">Product</span>
+    </div>
+
+    <!-- Product Detail Card Layout -->
+    <div class="product-detail-layout">
+      <!-- Left: Interactive Gallery -->
+      <div class="gallery-container">
+        <div class="main-image-viewport">
+          <img id="pMainImage" src="images/tech/5.jpg" alt="Product Image">
+        </div>
+        <div class="thumbnail-row">
+          <div class="thumb-item active"><img src="images/tech/5.jpg" alt="Thumb 1"></div>
+          <div class="thumb-item"><img src="images/tech/7.jpg" alt="Thumb 2"></div>
+          <div class="thumb-item"><img src="images/tech/9.jpg" alt="Thumb 3"></div>
+          <div class="thumb-item"><img src="images/tech/13.jpg" alt="Thumb 4"></div>
+        </div>
+      </div>
+
+      <!-- Right: Product Information & Purchase Controls -->
+      <div class="product-details-info">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <span class="badge badge-success"><i class="fa-solid fa-check"></i> IN STOCK</span>
+          <button class="btn-icon wishlist" onclick="toggleWishlist('tech-1', this)" title="Add to Wishlist">
+            <i class="fa-regular fa-heart"></i>
+          </button>
         </div>
 
-        <div id="description" class="tab-content">
-            <h2>Product Description</h2>
-            <p>This product is made from high-quality materials and designed for maximum comfort and style.</p>
+        <h1 id="pTitle" style="font-size: 1.8rem; margin: 12px 0 8px;">Surround Sound Gaming Headset Pro</h1>
+
+        <div class="product-rating-row" style="font-size: 0.95rem;">
+          <span style="color: var(--accent);">★★★★★</span>
+          <span id="pReviewsCount" class="rating-count">(142 customer reviews)</span>
+          <span style="color: var(--text-light); margin: 0 6px;">•</span>
+          <span style="color: var(--success); font-weight: 600;"><i class="fa-solid fa-shield-check"></i> 100% Genuine</span>
         </div>
 
-        <div id="reviews" class="tab-content hidden">
-            <h2>Customer Reviews</h2>
-            <p>No reviews yet. Be the first to write one!</p>
+        <div style="display: flex; align-items: baseline; gap: 12px; margin: 16px 0;">
+          <span id="pPrice" style="font-size: 2rem; font-weight: 800; color: var(--primary);">$49.99</span>
+          <span id="pOldPrice" style="font-size: 1.1rem; color: var(--text-light); text-decoration: line-through;">$69.99</span>
+          <span class="badge badge-danger">SAVE 25%</span>
         </div>
+
+        <p id="pDescription" style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 24px;">
+          Ergonomic gaming headset with noise-canceling bendable mic, 50mm dynamic neodymium audio drivers, and memory foam ear cushions.
+        </p>
+
+        <!-- Variants / Swatches -->
+        <div style="margin-bottom: 18px;">
+          <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-main);">Select Color:</label>
+          <div class="swatch-group">
+            <button class="swatch-btn active">Space Gray</button>
+            <button class="swatch-btn">Midnight Blue</button>
+            <button class="swatch-btn">Rose Gold</button>
+          </div>
+        </div>
+
+        <!-- Quantity & Add to Cart -->
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+          <div class="qty-stepper" style="height: 44px;">
+            <button id="pQtyDec" style="width: 36px; height: 100%; font-size: 1.1rem;">-</button>
+            <input type="text" id="pQtyInput" value="1" readonly style="width: 44px; font-size: 1rem;">
+            <button id="pQtyInc" style="width: 36px; height: 100%; font-size: 1.1rem;">+</button>
+          </div>
+          <button id="pAddToCartBtn" class="btn btn-primary btn-lg" style="flex: 1;">
+            <i class="fa-solid fa-cart-plus"></i> Add to Cart
+          </button>
+          <button id="pBuyNowBtn" class="btn btn-secondary btn-lg">
+            <i class="fa-solid fa-bolt"></i> Buy Now
+          </button>
+        </div>
+
+        <!-- Guarantees Grid -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 16px; background: var(--bg-alt); border-radius: var(--radius-md);">
+          <div style="display: flex; gap: 10px; align-items: center; font-size: 0.825rem;">
+            <i class="fa-solid fa-truck-fast" style="color: var(--primary); font-size: 1.2rem;"></i>
+            <span>Free 2-day delivery across US</span>
+          </div>
+          <div style="display: flex; gap: 10px; align-items: center; font-size: 0.825rem;">
+            <i class="fa-solid fa-rotate-left" style="color: var(--primary); font-size: 1.2rem;"></i>
+            <span>30-Day Money-Back Guarantee</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Tabs (Description, Specifications, Reviews) -->
+    <section class="product-tabs-section">
+      <div class="tab-headers">
+        <button class="tab-btn active" data-target="tabDesc">Description & Highlights</button>
+        <button class="tab-btn" data-target="tabSpecs">Technical Specifications</button>
+        <button class="tab-btn" data-target="tabReviews">Customer Reviews (142)</button>
+      </div>
+
+      <!-- Description Panel -->
+      <div id="tabDesc" class="tab-content-panel active">
+        <h3 style="margin-bottom: 14px;">Product Highlights</h3>
+        <p style="color: var(--text-muted); line-height: 1.7; margin-bottom: 16px;">
+          Engineered for performance and elegance, this product integrates next-generation hardware architecture with premium materials. Designed to adapt seamlessly to your lifestyle whether for high-intensity fitness, professional productivity, or aesthetic comfort.
+        </p>
+        <ul style="list-style: disc; margin-left: 20px; color: var(--text-muted); line-height: 1.8;">
+          <li>All-day battery longevity with rapid fast-charging capabilities.</li>
+          <li>Corrosion-resistant chassis with sleek chamfered edges.</li>
+          <li>Comprehensive compatibility with iOS, Android, and Windows systems.</li>
+        </ul>
+      </div>
+
+      <!-- Specs Panel -->
+      <div id="tabSpecs" class="tab-content-panel">
+        <h3 style="margin-bottom: 14px;">Technical Specifications</h3>
+        <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+          <tr style="border-bottom: 1px solid var(--border-light);"><td style="padding: 10px; font-weight: 700; width: 220px;">Display / Dimension</td><td style="padding: 10px; color: var(--text-muted);">1.78" Ultra AMOLED 368x448 px</td></tr>
+          <tr style="border-bottom: 1px solid var(--border-light);"><td style="padding: 10px; font-weight: 700;">Connectivity</td><td style="padding: 10px; color: var(--text-muted);">Bluetooth 5.3 Low Energy, Wi-Fi Dual Band</td></tr>
+          <tr style="border-bottom: 1px solid var(--border-light);"><td style="padding: 10px; font-weight: 700;">Water Resistance</td><td style="padding: 10px; color: var(--text-muted);">5ATM (up to 50 meters water submersion)</td></tr>
+          <tr style="border-bottom: 1px solid var(--border-light);"><td style="padding: 10px; font-weight: 700;">Warranty</td><td style="padding: 10px; color: var(--text-muted);">2-Year International Manufacturer Warranty</td></tr>
+        </table>
+      </div>
+
+      <!-- Reviews Panel -->
+      <div id="tabReviews" class="tab-content-panel">
+        <div style="display: grid; grid-template-columns: 280px 1fr; gap: 30px;">
+          <div>
+            <div style="font-size: 3rem; font-weight: 800; color: var(--text-main); line-height: 1;">4.8</div>
+            <div style="color: var(--accent); font-size: 1.2rem; margin: 4px 0;">★★★★★</div>
+            <p style="color: var(--text-muted); font-size: 0.85rem;">Based on 142 verified reviews</p>
+          </div>
+
+          <div>
+            <h4 style="margin-bottom: 14px;">Leave a Verified Review</h4>
+            <form id="reviewForm" style="display: flex; flex-direction: column; gap: 12px;">
+              <input type="text" placeholder="Your Name" required style="background: var(--bg-alt); border: 1px solid var(--border-color); padding: 10px 14px; border-radius: var(--radius-sm); color: var(--text-main);">
+              <textarea placeholder="Write your thoughts about this product..." rows="3" required style="background: var(--bg-alt); border: 1px solid var(--border-color); padding: 10px 14px; border-radius: var(--radius-sm); color: var(--text-main);"></textarea>
+              <button class="btn btn-primary btn-sm" type="submit" style="align-self: flex-start;">Submit Review</button>
+            </form>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <!-- Scripts -->
-    <script src="script.js"></script>
-    <script src="product.js"></script>
+    <!-- Related Products -->
+    <section class="section-block">
+      <div class="section-header">
+        <h3>Related & Recommended Products</h3>
+        <a href="category.html" style="font-size: 0.9rem; font-weight: 700; color: var(--primary);">View All &rarr;</a>
+      </div>
+      <div id="relatedProductsGrid" class="products-grid">
+        <!-- Populated by product.js -->
+      </div>
+    </section>
+  </main>
+
+  
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="brand-logo" style="margin-bottom: 8px;">
+            <div class="logo-icon"><i class="fa-solid fa-cube"></i></div>
+            <span>NEXUS<span class="accent">STORE</span></span>
+          </a>
+          <p>The next-generation smart e-commerce platform curated with premium tech, home luxury, and AI-powered recommendations.</p>
+          <div class="social-links">
+            <a href="#" class="social-link" title="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="#" class="social-link" title="GitHub"><i class="fa-brands fa-github"></i></a>
+            <a href="#" class="social-link" title="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+            <a href="#" class="social-link" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h5>Shop Categories</h5>
+          <ul>
+            <li><a href="category.html?category=electronics">Consumer Tech</a></li>
+            <li><a href="category.html?category=home">Home Interior</a></li>
+            <li><a href="category.html?category=clothing">Apparel & Fashion</a></li>
+            <li><a href="category.html">New Arrivals</a></li>
+            <li><a href="index.html#deals">Flash Deals</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Customer Care</h5>
+          <ul>
+            <li><a href="#">Help Center & FAQ</a></li>
+            <li><a href="#">Track Your Order</a></li>
+            <li><a href="#">Shipping & Delivery</a></li>
+            <li><a href="#">Returns & Refund</a></li>
+            <li><a href="#">Contact Support</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>Account</h5>
+          <ul>
+            <li><a href="login.html">Sign In / Register</a></li>
+            <li><a href="cart.html">View Cart</a></li>
+            <li><a href="category.html">My Wishlist</a></li>
+            <li><a href="#">Order History</a></li>
+            <li><a href="#">Affiliate Program</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col newsletter-form-box">
+          <h5>Join Our VIP Newsletter</h5>
+          <p>Get instant $15 discount coupons and exclusive access to flash drops.</p>
+          <form class="newsletter-form">
+            <input type="email" placeholder="Enter your email..." required>
+            <button class="btn btn-primary btn-sm" type="submit">Join</button>
+          </form>
+          <div style="display: flex; gap: 14px; margin-top: 20px; font-size: 1.5rem; color: var(--text-light);">
+            <i class="fa-brands fa-cc-visa" title="Visa"></i>
+            <i class="fa-brands fa-cc-mastercard" title="Mastercard"></i>
+            <i class="fa-brands fa-cc-apple-pay" title="Apple Pay"></i>
+            <i class="fa-brands fa-cc-paypal" title="PayPal"></i>
+            <i class="fa-brands fa-stripe" title="Stripe"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom-bar">
+        <span>&copy; 2026 NexusStore Inc. All rights reserved. Designed with modern aesthetics.</span>
+        <div style="display: flex; gap: 16px;">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Security</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Slide-Over Shopping Cart Drawer -->
+  <div id="cartDrawerBackdrop" class="cart-drawer-backdrop" onclick="closeCartDrawer()"></div>
+  <div id="cartDrawer" class="cart-drawer">
+    <div class="cart-drawer-header">
+      <h4><i class="fa-solid fa-bag-shopping" style="color: var(--primary);"></i> Your Cart</h4>
+      <button onclick="closeCartDrawer()" class="btn-icon" style="width: 32px; height: 32px; font-size: 1.1rem;">&times;</button>
+    </div>
+    <div id="cartDrawerBody" class="cart-drawer-body">
+      <!-- Items dynamically populated via script.js -->
+    </div>
+    <div class="cart-drawer-footer">
+      <div class="cart-subtotal-row">
+        <span>Subtotal:</span>
+        <span id="cartDrawerSubtotal" style="color: var(--primary);">$0.00</span>
+      </div>
+      <a href="cart.html" class="btn btn-primary btn-block" style="margin-bottom: 8px;">
+        <i class="fa-solid fa-lock"></i> Secure Checkout
+      </a>
+      <button class="btn btn-secondary btn-block btn-sm" onclick="closeCartDrawer()">Continue Shopping</button>
+    </div>
+  </div>
+
+  <!-- Quick View Modal -->
+  <div id="quickViewModal" class="modal-backdrop" onclick="if(event.target === this) closeQuickView()">
+    <div class="modal-dialog">
+      <button class="modal-close-btn" onclick="closeQuickView()">&times;</button>
+      <div id="quickViewContent">
+        <!-- Dynamically rendered -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating AI Assistant Widget -->
+  <div class="ai-assistant-wrapper">
+    <!-- Chat Window -->
+    <div id="aiChatWindow" class="ai-chat-window">
+      <div class="ai-chat-header">
+        <div class="ai-header-info">
+          <div class="ai-avatar"><i class="fa-solid fa-robot"></i></div>
+          <div>
+            <h4>Nexus AI Assistant</h4>
+            <p><i class="fa-solid fa-circle" style="font-size: 0.55rem; color: #4ade80;"></i> Online & Ready</p>
+          </div>
+        </div>
+        <button onclick="toggleAIChat()" style="color: #fff; font-size: 1.2rem; cursor: pointer;">&times;</button>
+      </div>
+
+      <!-- Messages Container -->
+      <div id="aiChatMessages" class="ai-chat-messages">
+        <div class="ai-msg bot">
+          <div class="ai-msg-bubble">
+            👋 Hi! I'm your AI Shopping Concierge. Looking for a product, gift recommendation, or current discount? Ask me anything!
+          </div>
+        </div>
+      </div>
+
+      <!-- Suggested Prompts -->
+      <div class="ai-suggested-prompts">
+        <span class="ai-prompt-chip" onclick="sendAIMessage('Recommend a laptop under $500')">💻 Laptop under $500</span>
+        <span class="ai-prompt-chip" onclick="sendAIMessage('Show me smart watches')">⌚ Smart Watch</span>
+        <span class="ai-prompt-chip" onclick="sendAIMessage('What is your return policy?')">🔄 Return Policy</span>
+        <span class="ai-prompt-chip" onclick="sendAIMessage('Best deals today')">🔥 Hot Deals</span>
+      </div>
+
+      <!-- Input Box -->
+      <div class="ai-chat-input-row">
+        <input type="text" id="aiChatInput" placeholder="Ask AI about products, specs, deals..." autocomplete="off">
+        <button onclick="sendAIMessage()" class="btn-icon" style="background: var(--primary); color: #fff; border: none; width: 34px; height: 34px;">
+          <i class="fa-solid fa-paper-plane"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Floating Launcher Button -->
+    <div class="ai-launcher-btn" onclick="toggleAIChat()" title="Chat with AI Assistant">
+      <span class="ai-badge-label">AI</span>
+      <i class="fa-solid fa-wand-magic-sparkles"></i>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+
+  <script src="script.js"></script>
+  <script src="product.js"></script>
 </body>
 </html>
